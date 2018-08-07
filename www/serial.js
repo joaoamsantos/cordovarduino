@@ -22,24 +22,6 @@ var serial = {
             [{'opts': opts}]
         );
     },
-    write: function(data, successCallback, errorCallback) {
-        cordova.exec(
-            successCallback,
-            errorCallback,
-            'Serial',
-            'writeSerial',
-            [{'data': data}]
-        );
-    },
-    writeHex: function(hexString, successCallback, errorCallback) {
-        cordova.exec(
-            successCallback,
-            errorCallback,
-            'Serial',
-            'writeSerialHex',
-            [{'data': hexString}]
-        );
-    },
     read: function(successCallback, errorCallback) {
         cordova.exec(
             successCallback,

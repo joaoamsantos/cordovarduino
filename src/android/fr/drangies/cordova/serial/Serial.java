@@ -46,8 +46,6 @@ public class Serial extends CordovaPlugin {
 	private static final String ACTION_REQUEST_PERMISSION = "requestPermission";
 	private static final String ACTION_OPEN = "openSerial";
 	private static final String ACTION_READ = "readSerial";
-	private static final String ACTION_WRITE = "writeSerial";
-	private static final String ACTION_WRITE_HEX = "writeSerialHex";
 	private static final String ACTION_CLOSE = "closeSerial";
 	private static final String ACTION_READ_CALLBACK = "registerReadCallback";
 
@@ -110,18 +108,6 @@ public class Serial extends CordovaPlugin {
 		else if (ACTION_OPEN.equals(action)) {
 			JSONObject opts = arg_object.has("opts")? arg_object.getJSONObject("opts") : new JSONObject();
 			openSerial(opts, callbackContext);
-			return true;
-		}
-		// write to the serial port
-		else if (ACTION_WRITE.equals(action)) {
-			String data = arg_object.getString("data");
-			writeSerial(data, callbackContext);
-			return true;
-		}
-		// write hex to the serial port
-		else if (ACTION_WRITE_HEX.equals(action)) {
-			String data = arg_object.getString("data");
-			writeSerialHex(data, callbackContext);
 			return true;
 		}
 		// read on the serial port
@@ -266,64 +252,7 @@ public class Serial extends CordovaPlugin {
 			}
 		});
 	}
-
-	/**
-	 * Write on the serial port
-	 * @param data the {@link String} representation of the data to be written on the port
-	 * @param callbackContext the cordova {@link CallbackContext}
-	 */
-	private void writeSerial(final String data, final CallbackContext callbackContext) {
-		cordova.getThreadPool().execute(new Runnable() {
-			public void run() {
-				if (port == null) {
-					callbackContext.error("Writing a closed port.");
-				}
-				else {
-					try {
-						Log.d(TAG, data);
-						byte[] buffer = data.getBytes();
-						port.write(buffer, 1000);
-						callbackContext.success();
-					}
-					catch (IOException e) {
-						// deal with error
-						Log.d(TAG, e.getMessage());
-						callbackContext.error(e.getMessage());
-					}
-				}
-			}
-		});
-	}
-
-	/**
-	 * Write hex on the serial port
-	 * @param data the {@link String} representation of the data to be written on the port as hexadecimal string
-	 *             e.g. "ff55aaeeef000233"
-	 * @param callbackContext the cordova {@link CallbackContext}
-	 */
-	private void writeSerialHex(final String data, final CallbackContext callbackContext) {
-		cordova.getThreadPool().execute(new Runnable() {
-			public void run() {
-				if (port == null) {
-					callbackContext.error("Writing a closed port.");
-				}
-				else {
-					try {
-						Log.d(TAG, data);
-						byte[] buffer = hexStringToByteArray(data);
-						int result = port.write(buffer, 1000);
-						callbackContext.success(result + " bytes written.");
-					}
-					catch (IOException e) {
-						// deal with error
-						Log.d(TAG, e.getMessage());
-						callbackContext.error(e.getMessage());
-					}
-				}
-			}
-		});
-	}
-
+	
 	/**
 	 * Convert a given string of hexadecimal numbers
 	 * into a byte[] array where every 2 hex chars get packed into

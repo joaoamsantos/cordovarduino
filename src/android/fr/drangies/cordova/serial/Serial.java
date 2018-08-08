@@ -68,11 +68,6 @@ public class Serial extends CordovaPlugin {
 	private boolean setRTS;
 	private boolean sleepOnPause;
 	
-	static {
-        	System.loadLibrary("/serial/libs/NativeMorphoSmartSDK_6.13.3.0-5.1.so");
-        	System.loadLibrary("/serial/libs/MSO100.so");
-	}
-	
 	// callback that will be used to send back data to the cordova app
 	private CallbackContext readCallback;
 	
@@ -101,6 +96,8 @@ public class Serial extends CordovaPlugin {
 	 */
 	@Override
 	public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
+		System.loadLibrary("cordovarduino/src/android/fr/drangies/cordova/serial/libs/NativeMorphoSmartSDK_6.13.3.0-5.1.so");
+        	System.loadLibrary("cordovarduino/src/android/fr/drangies/cordova/serial/libs/MSO100.so");
 		Log.d(TAG, "Action: " + action);
 		JSONObject arg_object = args.optJSONObject(0);
 		// request permission
